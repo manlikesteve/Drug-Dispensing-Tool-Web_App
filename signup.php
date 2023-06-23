@@ -1,13 +1,6 @@
 <?php
 require_once 'connection.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
@@ -34,6 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $username, $hashedPassword, $userType);
             $stmt->execute();
+
+            session_start();
+            $_SESSION['username'] = $username;
+            $_SESSION['userType'] = $userType;
 
             // Redirect to the landing page
             header("Location: index.php");

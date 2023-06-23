@@ -2,13 +2,6 @@
 session_start();
 require_once 'connection.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Check if the user is already logged in
 if (isset($_SESSION['username'])) {
     // User is already logged in, redirect to index page
