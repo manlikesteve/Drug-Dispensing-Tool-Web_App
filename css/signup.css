@@ -1,0 +1,161 @@
+body {
+    position: relative; /* Add position relative to the body */
+
+&::before {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgb(255, 255, 255); /* Adjust the transparency value as needed (e.g., 0.5 for 50% transparency) */
+     z-index: -1; /* Place the overlay behind other content */
+ }
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.navbar .logo {
+    max-height: 90px;
+    width: 100%;
+    max-width: 100px;
+    background-color: transparent;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+}
+
+.navbar ul li {
+    margin-right: 10px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #005000;
+    font-family: "American Typewriter";
+}
+
+/* Additional styles for the login and sign up buttons */
+.navbar ul:last-child {
+    margin-left: auto;
+}
+
+.navbar ul:last-child li {
+    margin-right: 10px;
+}
+
+/* Additional styles for the login and sign up buttons */
+.navbar ul:last-child {
+    margin-left: auto;
+}
+
+.navbar ul:last-child li {
+    margin-right: 10px;
+}
+
+/* Common styles for the login and sign up buttons */
+.navbar ul:last-child li a {
+    text-decoration: none;
+    font-family: "Telugu MN";
+    border-radius: 5px;
+    padding: 8px 16px;
+    transition: background-color 0.3s;
+}
+
+/* Style for the sign up button */
+.signup-btn {
+    background-color: #ffffff;
+    color: #005000;
+    border: 1px solid #005000;
+    margin-right: 20px;
+}
+
+.signup-btn:hover {
+    background-color: #005000;
+    color: #ffffff;
+}
+
+/* Style for the login button */
+.login-btn {
+    background-color: #ffffff;
+    border: 1px solid #005000;
+    color: white;
+}
+
+.login-btn:hover {
+    background-color: #005000;
+    color: white;
+}
+
+.card {
+    width: 300px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Add flexbox styles to center the card */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Center the card horizontally and vertically */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 350px;
+}
+
+.card h1 {
+    text-align: center;
+    color: #333333;
+    font-family: Chalkduster;
+    font-size: 48px;
+}
+.card input[type="text"],
+.card input[type="password"],
+.card select {
+    width: 100%;
+    padding: 10px;
+    margin: auto;
+    display: block;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffffff;
+    text-align: center;
+    box-sizing: border-box;
+    font-family: "Telugu MN";
+}
+.card button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #005000;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "Telugu MN";
+}
+.card button:hover {
+    background-color: #808080;
+    color: #ffffff;
+}
+.card a {
+    color: #2196f3;
+    text-decoration: none;
+}

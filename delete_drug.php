@@ -3,11 +3,11 @@ require_once 'connection.php';
 
 // Check if ID parameter is provided
 if (isset($_GET['id'])) {
-    $patientId = $_GET['id'];
+    $drugId = $_GET['id'];
 
     // Prepare and bind the SQL statement
-    $stmt = $conn->prepare("SELECT * FROM Patients WHERE id = ?");
-    $stmt->bind_param("i", $patientId);
+    $stmt = $conn->prepare("SELECT * FROM Drugs WHERE id = ?");
+    $stmt->bind_param("i", $drugId);
 
     // Execute the SQL statement
     $stmt->execute();
@@ -15,11 +15,11 @@ if (isset($_GET['id'])) {
 
     // Check if patient exists
     if ($result->num_rows > 0) {
-        $patient = $result->fetch_assoc();
-        $firstname = $patient['firstname'];
-        $lastname = $patient['lastname'];
+        $drug = $result->fetch_assoc();
+        $drugid = $drug['drugid'];
+        $drugname = $drug['drugname'];
     } else {
-        echo "Patient not found.";
+        echo "Drug not found.";
         exit();
     }
 
@@ -35,22 +35,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if delete confirmation is submitted
     if (isset($_POST['confirm_delete'])) {
         // Delete the patient record
-        $stmt = $conn->prepare("DELETE FROM Patients WHERE id = ?");
-        $stmt->bind_param("i", $patientId);
+        $stmt = $conn->prepare("DELETE FROM Drugs WHERE id = ?");
+        $stmt->bind_param("i", $drugId);
 
         // Execute the SQL statement
         if ($stmt->execute()) {
-            $successMessage = "Patient deleted successfully!";
-            echo "<script>alert('$successMessage'); window.location.href = 'doctor_dashboard.php';</script>";
+            $successMessage = "Drug deleted successfully!";
+            echo "<script>alert('$successMessage'); window.location.href = 'view_drug.php';</script>";
         } else {
-            echo "Error deleting patient: " . $stmt->error;
+            echo "Error deleting drug: " . $stmt->error;
         }
 
         // Close the statement
         $stmt->close();
     } else {
         // User canceled the deletion
-        echo "<script>window.location.href = 'doctor_dashboard.php';</script>";
+        echo "<script>window.location.href = 'view_drug.php';</script>";
     }
 }
 
@@ -61,14 +61,14 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Delete Patient</title>
+    <title>Delete Drug</title>
     <link rel="stylesheet" href="css/delete_patient.css">
 </head>
 <body>
 <div class="card">
-    <h1>Delete Patient</h1>
+    <h1>Delete Drrug</h1>
     <p>Are you sure you want to delete the patient:</p>
-    <p><?php echo $firstname . ' ' . $lastname; ?></p>
+    <p><?php echo $drugid . ' ' . $drugname; ?></p>
     <div class="button-container">
         <form method="POST" action="">
             <button class="confirm-button" type="submit" name="confirm_delete">Confirm Delete</button>

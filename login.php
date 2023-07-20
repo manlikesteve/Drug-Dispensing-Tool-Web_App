@@ -4,9 +4,15 @@ require_once 'connection.php';
 
 // Check if the user is already logged in
 if (isset($_SESSION['username'])) {
-    // User is already logged in, redirect to index page
-    header("Location: index.php");
-    exit;
+    // Redirect based on user type
+    if ($_SESSION['userType'] === 'doctor') {
+        header("Location: doctor_dashboard.php");
+    } elseif ($_SESSION['userType'] === 'patient') {
+        header("Location: index.php");
+    } elseif ($_SESSION['userType'] === 'pharmacist') {
+        header("Location: pharmacist_dashboard.php");
+    }
+    exit();
 }
 
 // Check if the form is submitted
@@ -14,10 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form data
     $username = $_POST["username"];
     $password = $_POST["password"];
-
-    // Check if the user exists in the database
-    // Perform necessary database query and validation here
-    // Assuming you have already established a database connection ($conn)
 
     // Prepare the SQL statement to fetch user details based on the username
     $stmt = $conn->prepare("SELECT username, password, user_type FROM users WHERE username = ?");
@@ -39,10 +41,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Password is correct, set session variables
             $_SESSION['username'] = $row['username'];
             $_SESSION['userType'] = $row['user_type'];
+            $_SESSION['profile_picture'] = $row['profile_picture'];
 
-            // Redirect to index page after successful login
-            header("Location: index.php");
-            exit;
+            // Redirect based on user type
+            if ($row['user_type'] === 'doctor') {
+                header("Location: doctor_dashboard.php");
+            } elseif ($row['user_type'] === 'patient') {
+                header("Location: patient_dashboard.php");
+            } elseif ($row['user_type'] === 'pharmacist') {
+                header("Location: pharmacist_dashboard.php");
+            }
+            exit();
         } else {
             // Password is incorrect, display an error message
             $error = "Invalid password";
@@ -56,71 +65,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conn->close();
 }
-
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Drug Dispensing Tool - Login</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f2f2f2;
-        }
-
-        .card {
-            width: 300px;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h2 {
-            text-align: center;
-            color: #333333;
-        }
-
-        .card input[type="text"],
-        .card input[type="password"],
-        .card select {
-            width: 100%;
-            padding: 10px;
-            margin: auto;
-            display: block;
-            border: none;
-            border-radius: 5px;
-            background-color: #ffffff;
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .card button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            border-radius: 3px;
-            border: none;
-            background-color: green;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .card button:hover {
-            background-color: darkgreen;
-        }
-
-        .card a {
-            color: #4caf50;
-            text-decoration: none;
-        }
-    </style>
+    <title>Tabib Health - Login</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
 </head>
 <body>
+<div class="navbar">
+    <img class="logo" src="images/_Pngtree_medical_health_logo_4135858-removebg-preview.png" alt="Logo">
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+    <ul>
+        <li><a class="login-btn active" href="login.php">Login</a></li>
+        <li><a class="signup-btn" href="signup.php">Sign up</a></li>
+    </ul>
+</div>
+
 <div class="card">
     <h2>Login</h2>
     <?php if (isset($error)) { ?>

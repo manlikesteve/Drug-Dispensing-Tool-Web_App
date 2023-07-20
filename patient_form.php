@@ -2,68 +2,7 @@
 <html>
 <head>
     <title>Patient Registration Form</title>
-    <style>
-        /* CSS styles */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f2f2f2;
-            font-family: Arial, sans-serif;
-        }
-
-        .card {
-            width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4caf50;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .success-message {
-            text-align: center;
-            margin-top: 10px;
-            color: green;
-        }
-    </style>
+    <link rel="stylesheet" href="css/patient_form.css">
 </head>
 <body>
 <?php
@@ -87,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Execute the SQL statement
     if ($stmt->execute()) {
         $successMessage = "Patient registered successfully!";
-        $linkToPatientList = '<a href="patients_table.php">View Patient List</a>'; // Link to patients_table.php
+        $linkToPatientList = '<a href="doctor_dashboard.php">View Patient List</a>'; // Link to doctor_dashboard.php
     } else {
         echo "Error: " . $stmt->error;
     }

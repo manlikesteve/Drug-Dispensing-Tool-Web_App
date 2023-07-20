@@ -1,6 +1,9 @@
 <?php
 require_once 'connection.php';
 
+// Directory to store profile pictures
+$targetDirectory = "profile_pictures/";
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
@@ -24,83 +27,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Insert the new user into the database
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $username, $hashedPassword, $userType);
-            $stmt->execute();
 
-            session_start();
-            $_SESSION['username'] = $username;
-            $_SESSION['userType'] = $userType;
+            // Check if a profile picture is uploaded
+            if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+                $profilePicture = $_FILES['profile_picture'];
+                $filename = basename($profilePicture['name']);
+                $targetPath = $targetDirectory . $filename;
 
-            // Redirect to the landing page
-            header("Location: index.php");
-            exit();
+                // Check if the uploaded file is an image
+                $imageFileType = strtolower(pathinfo($targetPath, PATHINFO_EXTENSION));
+                $allowedExtensions = array("jpg", "jpeg", "png", "gif");
+                if (!in_array($imageFileType, $allowedExtensions)) {
+                    $error = "Only JPG, JPEG, PNG, and GIF files are allowed.";
+                } else {
+                    if (move_uploaded_file($profilePicture['tmp_name'], $targetPath)) {
+                        $profilePicturePath = $filename;
+
+                        // Save the profile picture path in session
+                        $_SESSION['profile_picture'] = $filename;
+                    } else {
+                        $error = "Error uploading profile picture.";
+                    }
+                }
+            } else {
+                // No profile picture uploaded, use default picture
+                $profilePicturePath = $defaultPicture;
+            }
+
+            if (!isset($error)) {
+                $stmt = $conn->prepare("INSERT INTO users (username, password, user_type, profile_picture) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param("ssss", $username, $hashedPassword, $userType, $profilePicturePath);
+                $stmt->execute();
+
+                session_start();
+                $_SESSION['username'] = $username;
+                $_SESSION['userType'] = $userType;
+
+                // Redirect based on user type
+                if ($userType === 'doctor') {
+                    header("Location: doctor_dashboard.php");
+                } elseif ($userType === 'patient') {
+                    header("Location: patient_dashboard.php");
+                } elseif ($userType === 'pharmacist') {
+                    header("Location: pharmacist_dashboard.php");
+                }
+                exit();
+            }
         }
     }
 }
 ?>
 
+<!-- Remaining HTML code -->
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Sign Up</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f2f2f2;
-        }
-
-        .card {
-            width: 300px;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h1 {
-            text-align: center;
-            color: #333333;
-        }
-
-        .card input[type="text"],
-        .card input[type="password"],
-        .card select {
-            width: 100%;
-            padding: 10px;
-            margin: auto;
-            display: block;
-            border: none;
-            border-radius: 5px;
-            background-color: #ffffff;
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .card button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4caf50;
-            color: #ffffff;
-            cursor: pointer;
-        }
-
-        .card button:hover {
-            background-color: #45a049;
-        }
-
-        .card a {
-            color: #4caf50;
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/signup.css">
 </head>
 <body>
+<div class="navbar">
+    <img class="logo" src="images/_Pngtree_medical_health_logo_4135858-removebg-preview.png" alt="Logo">
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+    <ul>
+        <li><a class="login-btn" href="login.php">Login</a></li>
+        <li><a class="signup-btn active" href="signup.php">Sign up</a></li>
+    </ul>
+</div>
+
+<!--Sign Up Form-->
 <div class="card">
     <h1>Sign Up</h1>
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
@@ -114,6 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="patient">Patient</option>
             <option value="pharmacist">Pharmacist</option>
         </select><br><br>
+
+        <label for="profile_picture">Profile Picture: <br> (Only JPG, JPEG, PNG, and GIF files)<br> <br></label>
+        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" required><br><br>
 
         <button type="submit">Sign Up</button>
     </form>
