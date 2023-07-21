@@ -1,14 +1,18 @@
 <?php
 session_start();
+
+
+// Function to send a message to the pharmacist upon successful dispensing
+function sendDispenseMessage($drugName, $patientName) {
+    echo "Drug \"$drugName\" has been successfully dispensed to patient \"$patientName\"!";
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Tabib Health - Pharmacist</title>
-    <link rel="stylesheet" type="text/css" href="css/pharmacist_dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/dispense_drugs.css">
     <style>
         body {
             position: relative; /* Add position relative to the body */
@@ -124,6 +128,32 @@ session_start();
             color: #666;
         }
 
+        .login-btn{
+            display: inline-block;
+            background-color: #005000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 18px;
+            font-family: "Telugu MN";
+            margin-right: 10px; /* Add some spacing between the buttons */
+            cursor: pointer;
+        }
+
+        .signup-btn {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #005000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 18px;
+            font-family: "Telugu MN";
+            margin-right: 40px;
+            cursor: pointer;
+        }
+
         .navbar .logout-btn {
             background-color: #005000;
             color: white;
@@ -168,118 +198,104 @@ session_start();
             object-fit: cover;
             margin-right: 10px;
         }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f2f2f2;
-            font-family: Arial, sans-serif;
-        }
-
-        .card {
-            margin-top: 10px;
-            width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* CSS styles for the dispense drug button */
+        .prescriptions-table {
+            margin-top: 120px;
         }
 
         h1 {
+            font-family: Chalkduster;
+            color: #005000;
             text-align: center;
         }
 
-        form {
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Style the "Dispense Drug" button */
+        td a.dispense-button {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #005000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        td a.dispense-button:hover {
+            background-color: #003300;
+        }
+
+        /* Center the Cancel button */
+        .cancel-button {
+            text-align: center;
             margin-top: 20px;
         }
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4caf50;
-            color: #ffffff;
+        .cancel-button button {
+            padding: 10px 20px;
+            background-color: #aaa;
+            color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
 
-        button[type="submit"]:hover {
-            background-color: #45a049;
+        .cancel-button button:hover {
+            background-color: #999;
         }
 
-        .success-message {
-            text-align: center;
-            margin-top: 10px;
-            color: green;
+        /* Style for the dispensing history table */
+        .dispensing-history {
+            margin-top: 200px;
         }
 
-        /* Add this CSS for the "View All Prescriptions" button */
-        .view-prescriptions-btn {
-            display: inline-block;
-            background-color: #005000;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 18px;
-            font-family: "Telugu MN";
-            margin-top: 20px;
-            cursor: pointer;
+        .dispensing-history h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .view-prescriptions-btn:hover {
-            background-color: #003d00;
+        .dispensing-history table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ccc;
         }
 
-        .view-prescriptions-btn:active {
-            background-color: #002500;
+        .dispensing-history th,
+        .dispensing-history td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
         }
 
-        /* Style for the "View Dispensed Drugs" button */
-        .view-dispensed-button {
-            text-align: center;
-            margin-top: 450px;
+        .dispensing-history th {
+            background-color: #f2f2f2;
         }
 
-        .view-dispensed-button button {
-            display: inline-block;
-            background-color: #005000;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 18px;
-            font-family: "Telugu MN";
-            margin-top: 20px;
-            cursor: pointer;
+        .dispensing-history tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
-        .view-dispensed-button button:hover {
-            background-color: #808080;
-            color: white;
+        .dispensing-history tr:hover {
+            background-color: #e5f0ff;
         }
-
     </style>
 </head>
 <body>
-
+<!-- ... (the navbar code) ... -->
 <div class="navbar">
     <img class="logo" src="images/_Pngtree_medical_health_logo_4135858-removebg-preview.png" alt="Logo">
     <ul>
@@ -311,15 +327,86 @@ session_start();
     </div>
 </div>
 
-<div class="drug-form">
-    <?php include 'view_drug.php';
+<div class="prescriptions-table">
+    <?php
+
+    require_once 'connection.php';
+
+    // Fetch all prescriptions with patient information
+    $sql = "SELECT p.prescription_id, p.drug_name, p.dosage, p.duration, p.prescribing_doctor, p.prescription_date, 
+                           pt.firstname, pt.lastname, pt.email, pt.phone_number
+                    FROM prescriptions AS p
+                    INNER JOIN patients AS pt ON p.patient_id = pt.id";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        echo "<h1>All Prescriptions</h1><br>";
+        echo "<table>";
+        echo "<tr><th>Prescription ID</th><th>Patient Name</th><th>Email</th><th>Phone Number</th><th>Drug Name</th><th>Dosage</th><th>Duration</th><th>Prescribing Doctor</th><th>Prescription Date</th><th>Action</th></tr>";
+        while ($row = $result->fetch_assoc()) {
+            $patientName = $row["firstname"] . " " . $row["lastname"];
+            echo "<tr>";
+            echo "<td>" . $row["prescription_id"] . "</td>";
+            echo "<td>" . $patientName . "</td>";
+            echo "<td>" . $row["email"] . "</td>";
+            echo "<td>" . $row["phone_number"] . "</td>";
+            echo "<td>" . $row["drug_name"] . "</td>";
+            echo "<td>" . $row["dosage"] . "</td>";
+            echo "<td>" . $row["duration"] . "</td>";
+            echo "<td>" . $row["prescribing_doctor"] . "</td>";
+            echo "<td>" . $row["prescription_date"] . "</td>";
+            // Add "Dispense Drug" button with a link to the dispense_drug.php
+            echo "<td><a class ='dispense-button' href='dispense_drug.php?prescription_id=" . $row["prescription_id"] . "&drug_name=" . urlencode($row["drug_name"]) . "&patient_name=" . urlencode($patientName) . "'>Dispense Drugs</a></td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    } else {
+        echo "<h1>All Prescriptions</h1>"; // Add title even if no prescriptions found
+        echo "<p>No prescriptions found.</p>";
+    }
+
+    // Close the database connection
+    $conn->close();
     ?>
-    <button class="view-prescriptions-btn" onclick="location.href='dispense_drugs.php'">View All Prescriptions</button>
 </div>
 
-<div class="view-dispensed-button">
-    <button onclick="location.href='dispensed_drugs.php'">View Dispensed Drugs</button>
+<!-- Add "Cancel" button to go back to the pharmacist dashboard -->
+<div class="cancel-button">
+    <button onclick="location.href='pharmacist_dashboard.php'">Cancel</button>
 </div>
+
+<div class="dispensing-history">
+    <?php
+    // Fetch all dispensed drugs from drug_dispensing_history
+    $sql = "SELECT * FROM drug_dispensing_history";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        echo "<h1>Drug Dispensing History</h1><br>";
+        echo "<table>";
+        echo "<tr><th>ID</th><th>Prescription ID</th><th>Drug Name</th><th>Patient Name</th><th>Dispensing Date</th></tr>";
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["id"] . "</td>";
+            echo "<td>" . $row["prescription_id"] . "</td>";
+            echo "<td>" . $row["drug_name"] . "</td>";
+            echo "<td>" . $row["patient_name"] . "</td>";
+            echo "<td>" . $row["dispensing_date"] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    } else {
+        echo "<h1>Drug Dispensing History</h1>"; // Add title even if no dispenses found
+        echo "<p>No dispensed drugs found.</p>";
+    }
+
+    // Close the database connection
+    $conn->close();
+    ?>
+</div>
+
+
+<!-- Add any additional HTML or scripts here if needed -->
 
 </body>
 </html>

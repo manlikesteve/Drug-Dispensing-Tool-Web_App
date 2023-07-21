@@ -21,6 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
     $password = $_POST["password"];
 
+    // Check if the submitted credentials are for the admin user
+    if ($username === "admin" && $password === "admin1") {
+        // Admin credentials are valid, set the session variable
+        $_SESSION["admin_logged_in"] = true;
+
+        // Redirect the admin to the admin dashboard
+        header("Location: admin_dashboard.php");
+        exit();
+    }
+
     // Prepare the SQL statement to fetch user details based on the username
     $stmt = $conn->prepare("SELECT username, password, user_type FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
@@ -77,10 +87,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="navbar">
     <img class="logo" src="images/_Pngtree_medical_health_logo_4135858-removebg-preview.png" alt="Logo">
     <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="index.php">Home</a></li>
+        <li><a href="index.php">About Us</a></li>
+        <li><a href="index.php">Services</a></li>
+        <li><a href="index.php">Contact</a></li>
     </ul>
     <ul>
         <li><a class="login-btn active" href="login.php">Login</a></li>

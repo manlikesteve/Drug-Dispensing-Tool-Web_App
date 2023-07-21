@@ -90,10 +90,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="navbar">
     <img class="logo" src="images/_Pngtree_medical_health_logo_4135858-removebg-preview.png" alt="Logo">
     <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="index.php">Home</a></li>
+        <li><a href="index.php">About Us</a></li>
+        <li><a href="index.php">Services</a></li>
+        <li><a href="index.php">Contact</a></li>
     </ul>
     <ul>
         <li><a class="login-btn" href="login.php">Login</a></li>

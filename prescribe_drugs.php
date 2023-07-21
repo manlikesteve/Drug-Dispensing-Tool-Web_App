@@ -10,22 +10,40 @@
             background-color: #f1f1f1;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Set the height to the full viewport height */
             text-align: center; /* Centering the content */
         }
 
+        .prescription-container {
+            margin-left: 200%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .patient-info,
-        form {
-            flex: 1 1 400px; /* Both elements will have a flex basis of 400px and grow and shrink based on available space */
+        .prescribe-drug-form {
+            width: 400px;
             background-color: #fff;
             padding: 20px;
             border-radius: 4px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Other styles... */
+
+        /* Styling for the patient information section */
+        .patient-info {
+            background-color: #f9f9f9;
         }
 
         h1 {
             font-family: Chalkduster;
             color: #005000;
-            margin-bottom: 20px;
             text-align: center; /* Centering the content */
         }
 
@@ -115,9 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dosage = $_POST['dosage'];
     $duration = $_POST['duration'];
 
-    // You can add further validation checks here, such as checking if the drug exists in the drugs table, etc.
-    // For the sake of this example, we assume the data is valid.
-
     // Get the prescribing doctor's username from the session
     $prescribing_doctor = $_SESSION['username'];
 
@@ -168,39 +183,41 @@ $resultDrugs = $conn->query($sqlDrugs);
 
 ?>
 
-<h1>Prescribe Drugs</h1>
 
-<!-- Patient Information Section (Centered) -->
-<div class="patient-info">
-    <h2>Patient Information</h2>
-    <p><strong>Patient ID:</strong> <?php echo $patient['id']; ?></p>
-    <p><strong>Name:</strong> <?php echo $patient['firstname'] . ' ' . $patient['lastname']; ?></p>
-    <p><strong>Email:</strong> <?php echo $patient['email']; ?></p>
-    <p><strong>Phone Number:</strong> <?php echo $patient['phone_number']; ?></p>
-    <p><strong>Registration Date/Time:</strong> <?php echo $patient['reg_date']; ?></p>
+<div class="prescription-container">
+    <h1>Prescribe Drugs</h1><br>
+    <!-- Patient Information Section (Centered) -->
+    <div class="patient-info">
+        <h2>Patient Information</h2>
+        <p><strong>Patient ID:</strong> <?php echo $patient['id']; ?></p>
+        <p><strong>Name:</strong> <?php echo $patient['firstname'] . ' ' . $patient['lastname']; ?></p>
+        <p><strong>Email:</strong> <?php echo $patient['email']; ?></p>
+        <p><strong>Phone Number:</strong> <?php echo $patient['phone_number']; ?></p>
+        <p><strong>Registration Date/Time:</strong> <?php echo $patient['reg_date']; ?></p>
+    </div>
+
+    <!-- Prescription Form -->
+    <form method="post" action="prescribe_drugs.php?patient_id=<?php echo $patient_id; ?>">
+        <h2>Prescription Details</h2>
+
+        <label for="drug">Select Drug:</label>
+        <select id="drug" name="drug" required>
+            <option value="" disabled selected>Select a drug</option>
+            <?php while ($row = $resultDrugs->fetch_assoc()) : ?>
+                <option value="<?php echo $row['drugname']; ?>"><?php echo $row['drugname']; ?></option>
+            <?php endwhile; ?>
+        </select>
+
+        <label for="dosage">Dosage:</label>
+        <input type="text" id="dosage" name="dosage" required>
+
+        <label for="duration">Duration (Days):</label>
+        <input type="text" id="duration" name="duration" required>
+
+        <button type="submit">Prescribe</button>
+        <button type="button" class="cancel-button" onclick="window.location='doctor_dashboard.php'">Cancel</button>
+    </form>
 </div>
-
-<!-- Prescription Form -->
-<form method="post" action="prescribe_drugs.php?patient_id=<?php echo $patient_id; ?>">
-    <h2>Prescription Details</h2>
-
-    <label for="drug">Select Drug:</label>
-    <select id="drug" name="drug" required>
-        <option value="" disabled selected>Select a drug</option>
-        <?php while ($row = $resultDrugs->fetch_assoc()) : ?>
-            <option value="<?php echo $row['drugname']; ?>"><?php echo $row['drugname']; ?></option>
-        <?php endwhile; ?>
-    </select>
-
-    <label for="dosage">Dosage:</label>
-    <input type="text" id="dosage" name="dosage" required>
-
-    <label for="duration">Duration (Days):</label>
-    <input type="text" id="duration" name="duration" required>
-
-    <button type="submit">Prescribe</button>
-    <button type="button" class="cancel-button" onclick="window.location='doctor_dashboard.php'">Cancel</button>
-</form>
 
 <!-- Error and Success Messages -->
 <?php

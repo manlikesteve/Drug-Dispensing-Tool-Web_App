@@ -191,6 +191,7 @@ session_start();
             margin-bottom: 20px;
             position: relative;
             overflow: hidden;
+            height: 550px;
 
             /* Set the background image */
             background-image: url("images/Lafarmacia_ Centro Milano _ AMlab.jpeg");
@@ -280,6 +281,79 @@ session_start();
             object-fit: cover;
             margin-right: 10px;
         }
+
+        /* CSS for the prescriptions display section */
+        .prescriptions-display {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .prescriptions-display h2 {
+            font-size: 24px;
+            font-family: "American Typewriter";
+            color: #005000;
+            margin-bottom: 15px;
+            margin-top: 0;
+        }
+
+        .prescriptions-display p {
+            font-size: 16px;
+            font-family: "Telugu MN";
+            margin-bottom: 10px;
+        }
+
+        .prescriptions-display table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .prescriptions-display th, .prescriptions-display td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prescriptions-display th {
+            background-color: #f2f2f2;
+            font-family: "American Typewriter";
+            color: #005000;
+        }
+
+        .prescriptions-display tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .prescriptions-display tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Optional: Add styling for the get-started button */
+        .prescriptions-display .get-started-btn {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #005000;
+            padding: 10px 20px;
+            border: 1px solid #005000;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 18px;
+            font-family: "Telugu MN";
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .prescriptions-display .get-started-btn:hover {
+            background-color: #005000;
+            color: #ffffff;
+            border-color: #005000;
+        }
     </style>
 </head>
 <body>
@@ -321,13 +395,73 @@ session_start();
             <h2>We Are <br> Tabib Health</h2>
             <p>A Drug Dispensing Tool <br> designed to help patients, doctors, and pharmacists
                 <br> manage prescriptions, medications, and medical records efficiently and securely.</p>
-            <a href="signup.php" class="get-started-btn">View your Prescriptions</a>
+            <a href="#prescriptions-display" class="get-started-btn">View your Prescriptions</a>
         </div>
         <div class="image">
             <img src="images/pngtree-online-medical-health-consultation-doctor-vector-illustration-pattern-element-png-image_5779867-removebg-preview.png" alt="Image 1">
         </div>
         <div id="welcome-background-overlay"></div>
     </div>
+</div>
+
+<!-- Add the prescriptions display section below the welcome section -->
+<div class="prescriptions-display" id="prescriptions-display">
+    <?php
+    // Add PHP code here to fetch and display the patient's contact information and prescription
+    // For example:
+    require_once 'connection.php';
+
+    // Fetch the patient's information using the logged-in username
+    $username = $_SESSION['username'];
+    $sql = "SELECT * FROM patients WHERE firstname = '$username' OR lastname = '$username'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // If the patient exists, fetch their contact information
+        $row = $result->fetch_assoc();
+        $patientId = $row["id"];
+
+        // Now fetch the patient's prescription using their ID
+        $prescriptionSql = "SELECT * FROM prescriptions WHERE patient_id = '$patientId'";
+        $prescriptionResult = $conn->query($prescriptionSql);
+
+        if ($prescriptionResult->num_rows > 0) {
+            // If the patient has a prescription, display it along with contact information
+            echo "<h2>Your Prescription</h2>";
+            echo "<p><strong>Name:</strong> " . $row["firstname"] . " " . $row["lastname"] . "</p>";
+            echo "<p><strong>Email:</strong> " . $row["email"] . "</p>";
+            echo "<p><strong>Phone Number:</strong> " . $row["phone_number"] . "</p>";
+
+            echo "<table>";
+            echo "<tr><th>Prescription ID</th><th>Drug Name</th><th>Dosage</th><th>Duration</th><th>Prescribing Doctor</th><th>Prescription Date</th></tr>";
+            while ($prescriptionRow = $prescriptionResult->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $prescriptionRow["prescription_id"] . "</td>";
+                echo "<td>" . $prescriptionRow["drug_name"] . "</td>";
+                echo "<td>" . $prescriptionRow["dosage"] . "</td>";
+                echo "<td>" . $prescriptionRow["duration"] . "</td>";
+                echo "<td>" . $prescriptionRow["prescribing_doctor"] . "</td>";
+                echo "<td>" . $prescriptionRow["prescription_date"] . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        } else {
+            // If the patient has no prescription, display a message with contact information
+            echo "<h2>No Prescription Found</h2>";
+            echo "<p><strong>Name:</strong> " . $row["firstname"] . " " . $row["lastname"] . "</p>";
+            echo "<p><strong>Email:</strong> " . $row["email"] . "</p>";
+            echo "<p><strong>Phone Number:</strong> " . $row["phone_number"] . "</p>";
+            echo "<p>You currently have no prescription.</p>";
+        }
+    } else {
+        // If the patient doesn't exist in the patients table, display an error message
+        echo "<h2>Error: Patient Not Found</h2>";
+        echo "<p>Sorry, an error occurred. Please contact support.</p>";
+    }
+
+    // Close the database connection
+    $conn->close();
+    ?>
 </div>
 
 </body></html>
