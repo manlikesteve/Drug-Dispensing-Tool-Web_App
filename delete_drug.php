@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     } else {
         // User canceled the deletion
-        echo "<script>window.location.href = 'view_drug.php';</script>";
+        echo "<script>window.location.href = 'pharmacist_dashboard.php';</script>";
     }
 }
 

@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if cancel button is clicked
     if (isset($_POST['cancel'])) {
         // Redirect back to the patient table
-        header("Location: view_drug.php");
+        header("Location: pharmacist_dashboard.php");
         exit();
     }
 
@@ -105,7 +105,7 @@ $conn->close();
     // Display success message
     alert('<?php echo $_SESSION['success_message']; ?>');
     // Redirect back to the patient table
-    window.location.href = 'view_drug.php';
+    window.location.href = 'pharmacist_dashboard.php';
     // Unset the session variable
     <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>

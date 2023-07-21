@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Execute the SQL statement
     if ($stmt->execute()) {
         $successMessage = "Drug added successfully!";
-        $linkToPatientList = '<a href="view_drug.php">View Drug Stock List</a>'; // Link to view_drug.php
+        $linkToPatientList = '<a href="pharmacist_dashboard.php">View Drug Stock List</a>'; // Link to view_drug.php
     } else {
         echo "Error: " . $stmt->error;
     }
